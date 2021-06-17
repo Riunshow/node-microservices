@@ -12,38 +12,31 @@ import Environments from 'configs/environments'
 @JsonController('/user2')
 @Service()
 export class httpProxyController {
-  private proxy: any
   private readonly cacheServices: {}
 
   constructor() {
     // 已发现的服务 缓存起来
     this.cacheServices = {}
+  }
 
+  @Get('/*')
+  async query(@Ctx() ctx: Koa.Context) {
     //创建代理服务器对象并监听错误事件
-    this.proxy = httpProxy.createProxyServer()
-    this.proxy.on('error', (err, req, res) => {
+    const proxy = httpProxy.createProxyServer()
+    proxy.on('error', (err, req, res) => {
       console.log('proxy error: ', err)
       return {
         success: false,
         message: 'proxy error: ' + err
       }
     })
-  }
-
-  @Get('/*')
-  async query(@Ctx() ctx: Koa.Context) {
     // 获取服务名称
     const serviceName = ctx.request.url.split('/')[2] || ''
 
     // 生成服务地址
     const servicePath = Environments.zkRootPath + '/' + serviceName
 
-    if (this.cacheServices[serviceName]) {
-      console.log('-----------cache---------------' + this.cacheServices[serviceName])
-      this.proxy.web(ctx.req, ctx.res, {
-        target: Environments.identity === 'production' ? 'https://' : 'http://' + this.cacheServices[serviceName] //目标地址
-      })
-    } else {
+    if (!this.cacheServices[serviceName]){
       //获取服务路径下的地址节点
       const addressNodes = await (global as any).zk.getChildrenAsync(servicePath)
 
@@ -79,11 +72,11 @@ export class httpProxyController {
       }
 
       this.cacheServices[serviceName] = serviceAddress
-
-      const target = Environments.identity === 'production' ? 'https://' : 'http://' + this.cacheServices[serviceName] //目标地址
-      console.log('proxy target: ', target)
-
-      return this.proxy.web(ctx.req, ctx.res, { target })
     }
+
+    console.log('-----------cache---------------' + this.cacheServices[serviceName])
+    //目标地址
+    const target = Environments.identity === 'production' ? 'https://' : 'http://' + this.cacheServices[serviceName]
+    proxy.web(ctx.req, ctx.res, { target })
   }
 }
