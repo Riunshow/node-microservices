@@ -26,14 +26,6 @@ export class httpProxyController {
   async query(@Ctx() ctx: Koa.Context) {
     ctx.respond = false
 
-    this.proxy.on('error', (err, req, res) => {
-      print.danger('proxy error: ' + err)
-      return {
-        success: false,
-        message: 'proxy error: ' + err
-      }
-    })
-
     // 获取服务名称
     const serviceName = ctx.request.url.split('/')[2] || ''
 
@@ -83,5 +75,13 @@ export class httpProxyController {
     const target = 'http://' + this.cacheServices[serviceName]
 
     this.proxy.web(ctx.req, ctx.res, { target })
+
+    this.proxy.on('error', (err, req, res) => {
+      print.danger('proxy error: ' + err)
+      return {
+        success: false,
+        message: 'proxy error: ' + err
+      }
+    })
   }
 }
