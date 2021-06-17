@@ -1,11 +1,12 @@
 /**
  * http 服务代理
  */
-import { JsonController, Get, Ctx } from 'routing-controllers'
+import { JsonController, All, Ctx } from 'routing-controllers'
 import { Service } from 'typedi'
 import * as Koa from 'koa'
 import httpProxy from 'http-proxy'
 
+import { print } from 'configs/utils'
 import Environments from 'configs/environments'
 
 @JsonController('/users')
@@ -13,23 +14,26 @@ import Environments from 'configs/environments'
 @Service()
 export class httpProxyController {
   private readonly cacheServices: {}
+  private proxy: any
 
   constructor() {
     // 已发现的服务 缓存起来
     this.cacheServices = {}
+    this.proxy = httpProxy.createProxyServer()
   }
 
-  @Get('/*')
+  @All('/*')
   async query(@Ctx() ctx: Koa.Context) {
-    //创建代理服务器对象并监听错误事件
-    const proxy = httpProxy.createProxyServer()
-    proxy.on('error', (err, req, res) => {
-      console.log('proxy error: ', err)
+    ctx.respond = false
+
+    this.proxy.on('error', (err, req, res) => {
+      print.danger('proxy error: ' + err)
       return {
         success: false,
         message: 'proxy error: ' + err
       }
     })
+
     // 获取服务名称
     const serviceName = ctx.request.url.split('/')[2] || ''
 
@@ -42,7 +46,7 @@ export class httpProxyController {
 
       const size: number = addressNodes.length
       if (size === 0) {
-        console.log('address node error: address node is not exist')
+        print.danger('address node error: address node is not exist')
         return {
           success: false,
           message: 'address node error: address node is not exist'
@@ -57,14 +61,14 @@ export class httpProxyController {
         //若存在多个地址，则随机获取一个地址
         addressPath += addressNodes[parseInt(String(Math.random() * size), 10)]
       }
-      console.log('addressPath:%s', addressPath)
+      print.log('addressPath: ' + addressPath)
 
       const serviceAddress = await (global as any).zk.getDataAsync(addressPath)
 
-      console.log('serviceAddress:%s', serviceAddress)
+      print.log('serviceAddress:' + serviceAddress)
 
       if (!serviceAddress) {
-        console.log('serviceAddress is not exist')
+        print.danger('serviceAddress is not exist')
         return {
           success: false,
           message: 'serviceAddress is not exist'
@@ -74,9 +78,10 @@ export class httpProxyController {
       this.cacheServices[serviceName] = serviceAddress
     }
 
-    console.log('-----------cache---------------' + this.cacheServices[serviceName])
+    print.log('-----------cache---------------' + this.cacheServices[serviceName])
     //目标地址
-    const target = Environments.identity === 'production' ? 'https://' : 'http://' + this.cacheServices[serviceName]
-    proxy.web(ctx.req, ctx.res, { target })
+    const target = 'http://' + this.cacheServices[serviceName]
+
+    this.proxy.web(ctx.req, ctx.res, { target })
   }
 }

@@ -12,9 +12,7 @@ const app = async (): Promise<Server> => {
     const app = await createServer()
 
     return app.listen(Environment.port, () => {
-      print.log(
-        `server listening on ${Environment.port}, in ${Environment.identity} mode.`
-      )
+      print.tip(`server listening on ${Environment.port}, in ${Environment.identity} mode.`)
       bootstrap.after()
     })
   } catch (e) {
