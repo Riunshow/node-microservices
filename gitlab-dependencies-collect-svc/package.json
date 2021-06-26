@@ -11,7 +11,9 @@
     "build": "bash ./build.sh",
     "compose": "POSTGRES_PORT=5432 docker-compose -f compose.yml up -d",
     "migrate": "prisma migrate dev",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "db": "prisma generate && prisma migrate dev",
+    "format:prisma": "prisma format"
   },
   "engines": {
     "node": ">= 12.0"

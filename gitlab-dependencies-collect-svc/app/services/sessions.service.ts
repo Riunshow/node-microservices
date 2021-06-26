@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client'
 export class SessionsService {
   /**
    * Type 'Prisma.SessionCreateInput' is automatically generated.
-   * Whenever you modify file 'prisma/schema.prisma' and then run command:
+   * Whenever you modify file 'prisma/schema.prisma.demo' and then run command:
    *   prisma generate
    *   prisma migrate dev
    * The types is automatically updated.
