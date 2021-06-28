@@ -1,1 +1,1 @@
-export * from './sessions.service'
+export * from './groups.service'

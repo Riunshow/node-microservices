@@ -32,6 +32,7 @@ export class httpProxyController {
     // 生成服务地址
     const servicePath = Environments.zkRootPath + '/' + serviceName
 
+    // 如果缓存中没找到服务地址
     if (!this.cacheServices[serviceName]){
       //获取服务路径下的地址节点
       const addressNodes = await (global as any).zk.getChildrenAsync(servicePath)

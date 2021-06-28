@@ -6,7 +6,6 @@ import * as bootstrap from 'configs/bootstrap'
 
 import './app/hepler/zk.client'
 
-
 const app = async (): Promise<Server> => {
   try {
     const app = await createServer()
@@ -21,7 +20,7 @@ const app = async (): Promise<Server> => {
 }
 
 (async () => {
-  let interval
+  let interval: NodeJS.Timeout
   let interval_index: number = 0
 
   if ((global as any).zk) {
