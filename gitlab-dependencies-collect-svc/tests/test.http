@@ -1,3 +1,22 @@
+GET http://localhost:3001/api/collect/projects/1
+Accept: application/json
+
+###
+POST http://localhost:3001/api/collect/projects
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "test",
+  "path": "/t",
+  "gid": 1
+}
+
+###
+GET http://localhost:3001/api/collect/projects/list
+Accept: application/json
+
+###
 POST http://localhost:3001/api/collect/groups
 Content-Type: application/json
 
@@ -12,7 +31,7 @@ GET http://localhost:3001/api/collect/groups/2
 Accept: application/json
 
 ###
-GET http://localhost:3001/api/collect/groups/list?name=
+GET http://localhost:3001/api/collect/groups/list
 Accept: application/json
 
 ###

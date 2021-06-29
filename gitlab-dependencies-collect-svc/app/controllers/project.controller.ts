@@ -14,17 +14,17 @@ import { Service } from 'typedi'
 import { Response, ListResponse } from 'types'
 
 // services
-import { GroupsService } from '../services'
+import { ProjectService } from '../services'
 
-@JsonController('/groups')
+@JsonController('/projects')
 @Service()
-export class GroupsController {
-  constructor(private groupsService: GroupsService) {
+export class ProjectController {
+  constructor(private projectService: ProjectService) {
   }
 
   /**
-   * 分页查找全部 group
-   * @param name group name
+   * 分页查找全部 project
+   * @param name project name
    * @param pageNo
    * @param pageSize
    */
@@ -33,43 +33,39 @@ export class GroupsController {
     @QueryParam('name') name?: string,
     @QueryParam('pageNo') pageNo: number = 1,
     @QueryParam('pageSize') pageSize: number = 1000
-  ): Promise<ListResponse<Prisma.GroupUncheckedCreateInput>> {
+  ): Promise<ListResponse<any>> {
     const take = pageSize
     const skip = (pageNo - 1) * pageSize
     const where = {
       name: {
-        contains: name || '',
-      },
-      parentId: {
-        not: 1
+        contains: name
       }
     }
     const include = {
-      parentGroup: true,
-      subGroup: true,
-      project: true
+      group: true,
+      dependencies: true
     }
 
-    const data = await this.groupsService.findAll({ where, include, take, skip })
+    const data = await this.projectService.findAll({ where, include, take, skip })
 
     return {
       pageNo,
       pageSize,
       total: 0,
       success: true,
-      message: '获取group列表成功',
+      message: '获取 project 列表成功',
       data
     }
   }
 
   /**
-   * 根据Id获取单个 group 信息
+   * 根据Id获取单个 project 信息
    * @param params
    */
   @Get('/:id')
   async queryOneById(
     @Params() params: { id: string }
-  ): Promise<Response<Prisma.GroupWhereUniqueInput>> {
+  ): Promise<Response<Prisma.ProjectWhereUniqueInput>> {
     if (!params.id) {
       throw new BadRequestError('id is required')
     }
@@ -79,16 +75,15 @@ export class GroupsController {
     }
 
     const include = {
-      parentGroup: true,
-      subGroup: true,
-      project: true
+      group: true,
+      dependencies: true
     }
 
-    const data = await this.groupsService.findOne({ where, include })
+    const data = await this.projectService.findOne({ where, include })
 
     return {
       success: true,
-      message: '获取 group 信息成功',
+      message: '获取 project 信息成功',
       data
     }
   }
@@ -98,29 +93,27 @@ export class GroupsController {
    * @param id
    * @param name
    * @param path
-   * @param parentId 不传默认为根节点
+   * @param gid  groupId
    */
   @Post('/')
   async create(
     @BodyParam('id') id: number,
     @BodyParam('name') name: string,
     @BodyParam('path') path: string,
-    @BodyParam('parentId') parentId: number = 1
-  ): Promise<Response<Prisma.GroupUncheckedCreateInput>> {
-
-    console.log(name, path, parentId)
-    if (!name || !path || !parentId) {
+    @BodyParam('gid') gid: number
+  ): Promise<Response<Prisma.ProjectUncheckedCreateInput>> {
+    if (!name || !path || !gid) {
       throw new BadRequestError('params is required')
     }
     const createArgs = {
-      data: { id, name, path, parentId }
+      data: { id, name, path, gid }
     }
 
-    const data = await this.groupsService.create(createArgs)
+    const data = await this.projectService.create(createArgs)
 
     return {
       success: true,
-      message: '新增 group 成功',
+      message: '新增 project 成功',
       data
     }
   }
