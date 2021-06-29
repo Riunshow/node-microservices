@@ -46,11 +46,10 @@ model Dependencies {
   id        Int      @id @default(autoincrement())
   name      String
   version   String
+  isDev     Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   project Project @relation(fields: [pid], references: [id])
   pid     Int
-
-  @@unique([name, version])
 }

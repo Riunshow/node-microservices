@@ -5,7 +5,7 @@ import {
   Post,
   BodyParam,
   QueryParam,
-  Params, Body
+  Params
 } from 'routing-controllers'
 import { Prisma } from '@prisma/client'
 import { Service } from 'typedi'

@@ -1,4 +1,17 @@
 const axios = require('axios')
+const {
+  getGroups,
+  getGroupProjects,
+  getProjectsFileRaw
+} = require('./utils/gitlab.api')
+
+//  todo 定时任务更新 gitlab [group, project, dependencies]
+;
+(async () => {
+  // await syncGroups()
+  // await syncProjects()
+  await syncDependencies()
+})()
 
 function request(config) {
   return axios({
@@ -13,19 +26,18 @@ function request(config) {
 async function sleep() {
   return new Promise(resolve => {
     setTimeout(() => {
+      console.log('-----7s----')
       resolve()
-    }, 5000)
+    }, 7000)
   })
 }
 
-async function getGroups() {
-  console.log('-------start-------')
-  const res = await request({
-    method: 'get',
-    url: 'http://gd-gitlab.dc.servyou-it.com/api/v4/groups'
-  })
-
-  console.log('----------gitlab---------')
+/**
+ * 同步 groups
+ * @returns {Promise<void>}
+ */
+async function syncGroups() {
+  const res = await getGroups()
   const newArrList = [...res.data.filter(item => !item.parent_id), ...res.data.filter(item => item.parent_id)]
 
   for (const item of newArrList) {
@@ -50,21 +62,22 @@ async function getGroups() {
   }
 }
 
-async function getProjects() {
+/**
+ * 同步 projects
+ * @returns {Promise<void>}
+ */
+async function syncProjects() {
   // 查全部 group
   const allGroupsRes = await request({
     method: 'get',
     url: 'http://localhost:3001/api/collect/groups/list'
   })
 
-  const allGroups = allGroupsRes.data.data.filter(item => item.id > 1246)
-  console.log(allGroups)
+  const allGroups = allGroupsRes.data.data
+
   for (const item of allGroups) {
     // 根据 gid 查下面所有 project
-    const gitlabProject = await request({
-      method: 'get',
-      url: `http://gd-gitlab.dc.servyou-it.com/api/v4/groups/${item.id}/projects`
-    })
+    const gitlabProject = await getGroupProjects(item.id)
 
     async function mapGitlabProject(gitlabProjectElement) {
       // 查找是否存在  project
@@ -72,8 +85,6 @@ async function getProjects() {
         method: 'get',
         url: `http://localhost:3001/api/collect/projects/${gitlabProjectElement.id}`
       })
-
-      console.log(isExistProjectRes.data.data)
 
       if (!isExistProjectRes.data.data) {
         const projectParams = {
@@ -92,16 +103,79 @@ async function getProjects() {
     }
 
     for (const gitlabProjectElement of gitlabProject.data) {
-      await sleep()
-      console.log('-----5s----')
-      console.log('--------------')
       console.log(gitlabProjectElement.id, item.id)
-      console.log(gitlabProjectElement.name, gitlabProjectElement.web_url)
+      console.log(gitlabProjectElement.name)
+      console.log(gitlabProjectElement.web_url)
 
       await mapGitlabProject(gitlabProjectElement)
+      await sleep()
     }
   }
 }
 
-// getGroups()
-getProjects()
+/**
+ * 同步 dependencies
+ * @returns {Promise<void>}
+ */
+async function syncDependencies() {
+  // 查全部 group
+  const allProjectRes = await request({
+    method: 'get',
+    url: 'http://localhost:3001/api/collect/projects/list'
+  })
+
+  const allProjects = allProjectRes.data.data
+
+  // 插入
+  async function insertDependencies({ pid, version, name, isDev }) {
+    // 查找是否存在
+    const isExistDeRes = await request({
+      method: 'post',
+      url: 'http://localhost:3001/api/collect/dependencies/one',
+      data: { pid, version, name }
+    })
+
+    if (!isExistDeRes.data.data) {
+      await request({
+        method: 'post',
+        url: 'http://localhost:3001/api/collect/dependencies',
+        data: { name, pid, version, isDev }
+      })
+    }
+  }
+
+  for (const project of allProjects) {
+    const { devDependencies = undefined, dependencies = undefined } = await getProjectsFileRaw(project.id, 'package.json')
+    await sleep()
+
+    console.log(project.id)
+
+    let reqData = {
+      pid: project.id
+    }
+
+    if (devDependencies) {
+      for (const name of Object.keys(devDependencies)) {
+        reqData = {
+          ...reqData,
+          name,
+          version: devDependencies[name],
+          isDev: true
+        }
+        await insertDependencies(reqData)
+      }
+    }
+
+    if (dependencies) {
+      for (const name of Object.keys(dependencies)) {
+        reqData = {
+          ...reqData,
+          name,
+          version: dependencies[name],
+          isDev: false
+        }
+        await insertDependencies(reqData)
+      }
+    }
+  }
+}
