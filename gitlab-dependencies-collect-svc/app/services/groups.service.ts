@@ -4,22 +4,15 @@ import { Prisma } from '@prisma/client'
 
 @Service()
 export class GroupsService {
-  async create(group: Prisma.GroupUncheckedCreateInput) {
-    return prisma.group.create({
-      data: group
-    })
+  async create(groupCreateArgs: Prisma.GroupCreateArgs) {
+    return prisma.group.create(groupCreateArgs)
   }
 
-  async findAll(name: string, take: number, skip: number) {
-    return prisma.group.findMany({
-      where: {
-        name
-      },
-      include: {
-        group: true
-      },
-      take,
-      skip
-    })
+  async findAll(groupFindManyArgs: Prisma.GroupFindManyArgs) {
+    return prisma.group.findMany(groupFindManyArgs)
+  }
+
+  async findOne(groupFindUniqueArgs: Prisma.GroupFindUniqueArgs) {
+    return prisma.group.findUnique(groupFindUniqueArgs)
   }
 }

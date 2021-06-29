@@ -1,0 +1,19 @@
+POST http://localhost:3001/api/collect/groups
+Content-Type: application/json
+
+{
+  "id": 123,
+  "name": "g-test-1",
+  "path": "/lala"
+}
+
+###
+GET http://localhost:3001/api/collect/groups/2
+Accept: application/json
+
+###
+GET http://localhost:3001/api/collect/groups/list?name=
+Accept: application/json
+
+###
+

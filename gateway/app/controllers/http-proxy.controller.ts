@@ -9,8 +9,7 @@ import httpProxy from 'http-proxy'
 import { print } from 'configs/utils'
 import Environments from 'configs/environments'
 
-@JsonController('/users')
-@JsonController('/user2')
+@JsonController('/collect')
 @Service()
 export class httpProxyController {
   private readonly cacheServices: {}

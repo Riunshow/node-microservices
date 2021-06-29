@@ -4,6 +4,8 @@ import Environment from 'configs/environments'
 import createServer from 'configs/application'
 import * as bootstrap from 'configs/bootstrap'
 
+import 'app/helpers/zk.client'
+
 module.exports = (async (): Promise<Server> => {
   try {
     const app = await createServer()

@@ -12,30 +12,30 @@ generator client {
 
 // group表, 自关联->subgroup
 model Group {
-  id          Int         @id @default(autoincrement())
-  name        String
-  path        String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  group       Group       @relation(fields: [parentId], references: [id])
+  parentGroup Group @relation(fields: [parentId], references: [id])
   parentId    Int
 
-  project     Project[]
-  parentGroup Group[]     @relation("GroupToGroup")
+  subGroup Group[]   @relation("GroupToGroup")
+  project  Project[]
 
   @@unique([name, path])
 }
 
 model Project {
-  id        Int        @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
   path      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  group        Group  @relation(fields: [gid], references: [id])
-  gid          Int
+  group Group @relation(fields: [gid], references: [id])
+  gid   Int
 
   dependencies Dependencies[]
 
@@ -43,13 +43,13 @@ model Project {
 }
 
 model Dependencies {
-  id        Int        @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
   version   String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  project Project     @relation(fields: [pid], references: [id])
+  project Project @relation(fields: [pid], references: [id])
   pid     Int
 
   @@unique([name, version])

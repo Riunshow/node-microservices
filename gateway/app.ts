@@ -4,7 +4,7 @@ import Environment from 'configs/environments'
 import createServer from 'configs/application'
 import * as bootstrap from 'configs/bootstrap'
 
-import './app/hepler/zk.client'
+import 'app/helpers/zk.client'
 
 const app = async (): Promise<Server> => {
   try {
