@@ -8,8 +8,8 @@ const {
 //  todo 定时任务更新 gitlab [group, project, dependencies]
 ;
 (async () => {
-  // await syncGroups()
-  // await syncProjects()
+  await syncGroups()
+  await syncProjects()
   await syncDependencies()
 })()
 
@@ -38,7 +38,8 @@ async function sleep() {
  */
 async function syncGroups() {
   const res = await getGroups()
-  const newArrList = [...res.data.filter(item => !item.parent_id), ...res.data.filter(item => item.parent_id)]
+
+  const newArrList = [...res.filter(item => !item.parent_id), ...res.filter(item => item.parent_id)]
 
   for (const item of newArrList) {
     const isExist = await request({
@@ -102,7 +103,9 @@ async function syncProjects() {
       }
     }
 
-    for (const gitlabProjectElement of gitlabProject.data) {
+    console.log(gitlabProject)
+
+    for (const gitlabProjectElement of gitlabProject) {
       console.log(gitlabProjectElement.id, item.id)
       console.log(gitlabProjectElement.name)
       console.log(gitlabProjectElement.web_url)
