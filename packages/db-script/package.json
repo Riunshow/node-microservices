@@ -1,0 +1,18 @@
+{
+  "name": "@turbine/db-script",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "db": "prisma generate && prisma migrate dev",
+    "format": "prisma format"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "2.26.0"
+  },
+  "dependencies": {
+    "@prisma/client": "2.26.0"
+  }
+}

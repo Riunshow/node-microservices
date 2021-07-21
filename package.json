@@ -1,0 +1,23 @@
+{
+  "name": "turbine",
+  "version": "1.0.0",
+  "description": "> node koa prisma zookeeper microservices --- * http svc ->  dependencies-collect-svc * rpc svc  ->  message-notice-svc",
+  "main": "index.js",
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lerna": "lerna"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Riunshow/node-microservices.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Riunshow/node-microservices/issues"
+  },
+  "homepage": "https://github.com/Riunshow/node-microservices#readme"
+}
