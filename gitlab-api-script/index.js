@@ -17,8 +17,7 @@ function request(config) {
   return axios({
     ...config,
     headers: {
-      'PRIVATE-TOKEN': 'XNxzJkzUHPy-R81r-WJT'
-      // 'PRIVATE-TOKEN': 'BDgycbqLekgsEnwe8VyZ'
+      'PRIVATE-TOKEN': ''
     }
   })
 }
