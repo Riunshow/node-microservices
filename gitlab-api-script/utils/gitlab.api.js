@@ -5,7 +5,7 @@ const request = require('./request')
  * @returns {AxiosPromise}
  */
 function getGroups() {
-  return request(`/groups`)
+  return request(`/groups?per_page=500`)
 }
 
 /**
@@ -14,7 +14,7 @@ function getGroups() {
  * @returns {AxiosPromise}
  */
 function getGroupProjects(groupId) {
-  return request(`/groups/${groupId}/projects`)
+  return request(`/groups/${groupId}/projects?per_page=500`)
 }
 
 /**

@@ -12,7 +12,7 @@ export const routingConfigs: RoutingControllersOptions = {
   interceptors: dictToArray(interceptors),
 
   // router prefix
-  // e.g. api => http://hostname:port/{routePrefix}/{controller.method}
+  // e.g. api => http://hostname:port/{routePrefix}/{controllers.method}
   routePrefix: '/api/collect',
 
   // auto validate entity item

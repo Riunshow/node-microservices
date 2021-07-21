@@ -16,6 +16,6 @@ module.exports = (async (): Promise<Server> => {
       bootstrap.after()
     })
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 })()

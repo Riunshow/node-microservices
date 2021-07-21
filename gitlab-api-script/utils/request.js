@@ -1,6 +1,7 @@
 const axios = require('axios')
-const TOKEN  = 'XNxzJkzUHPy-R81r-WJT'
+// const TOKEN  = 'XNxzJkzUHPy-R81r-WJT'
 // const TOKEN  = 'BDgycbqLekgsEnwe8VyZ'
+const TOKEN = '14xFSq_tvT3DJpFtEguU'
 
 const baseURL = 'http://gd-gitlab.dc.servyou-it.com/api/v4'
 

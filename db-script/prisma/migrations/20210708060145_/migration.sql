@@ -29,11 +29,25 @@ CREATE TABLE `Dependencies` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `version` VARCHAR(191) NOT NULL,
+    `isDev` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `pid` INTEGER NOT NULL,
 
-    UNIQUE INDEX `Dependencies.name_version_unique`(`name`, `version`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Message` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `sender` VARCHAR(191) NOT NULL,
+    `gitlabPath` VARCHAR(191),
+    `msgType` ENUM('FEATURE', 'RELEASE', 'BUGFIX') NOT NULL DEFAULT 'FEATURE',
+    `contentType` ENUM('TEXT', 'MARKDOWN') NOT NULL DEFAULT 'TEXT',
+    `content` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

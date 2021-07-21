@@ -8,7 +8,7 @@ const {
 //  todo 定时任务更新 gitlab [group, project, dependencies]
 ;
 (async () => {
-  await syncGroups()
+  // await syncGroups()
   await syncProjects()
   await syncDependencies()
 })()
@@ -26,9 +26,9 @@ function request(config) {
 async function sleep() {
   return new Promise(resolve => {
     setTimeout(() => {
-      console.log('-----7s----')
+      console.log('-----waiting 10s----')
       resolve()
-    }, 7000)
+    }, 10000)
   })
 }
 
@@ -74,6 +74,7 @@ async function syncProjects() {
     url: 'http://localhost:3001/api/collect/groups/list'
   })
 
+  // timeout 在这里过滤出去  .filter(item => item.id > 1172)
   const allGroups = allGroupsRes.data.data
 
   for (const item of allGroups) {
@@ -103,16 +104,20 @@ async function syncProjects() {
       }
     }
 
-    console.log(gitlabProject)
+    console.log('groupId: ', item.id)
+    // console.log('[gitlabProject]: ', gitlabProject)
+
+    // const reverseList = gitlabProject.reverse()
 
     for (const gitlabProjectElement of gitlabProject) {
-      console.log(gitlabProjectElement.id, item.id)
-      console.log(gitlabProjectElement.name)
-      console.log(gitlabProjectElement.web_url)
+      console.log('projectId: ', gitlabProjectElement.id)
+      console.log('projectName: ', gitlabProjectElement.name)
+      console.log('projectUrl: ', gitlabProjectElement.web_url)
 
       await mapGitlabProject(gitlabProjectElement)
-      await sleep()
     }
+
+    await sleep()
   }
 }
 

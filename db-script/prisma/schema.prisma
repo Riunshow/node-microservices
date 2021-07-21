@@ -27,6 +27,7 @@ model Group {
   @@unique([name, path])
 }
 
+// 项目
 model Project {
   id        Int      @id @default(autoincrement())
   name      String
@@ -38,18 +39,47 @@ model Project {
   gid   Int
 
   dependencies Dependencies[]
+  messages     Message[]
 
   @@unique([name, path])
 }
 
+// 依赖
 model Dependencies {
   id        Int      @id @default(autoincrement())
   name      String
   version   String
-  isDev     Boolean  @default(false)
+  isDev     Boolean  @default(false) // 是否是 devDependencies
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   project Project @relation(fields: [pid], references: [id])
   pid     Int
+}
+
+// 消息类型
+enum MsgType {
+  FEATURE
+  RELEASE
+  BUGFIX
+}
+
+// 消息内容类型
+enum ContentType {
+  TEXT
+  MARKDOWN
+}
+
+// message 表
+model Message {
+  id          Int         @id @default(autoincrement())
+  sender      String // 发送人
+  msgType     MsgType     @default(FEATURE)
+  contentType ContentType @default(TEXT)
+  content     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now())
+
+  project         Project @relation(fields: [gitlabProjectId], references: [id])
+  gitlabProjectId Int
 }
