@@ -1,9 +1,8 @@
-import { createClient, ACL, CreateMode } from 'node-zookeeper-client'
-import Environments from '../../configs/environments'
+import { ACL, createClient, CreateMode } from 'node-zookeeper-client'
+import { rootPath, serviceName, zkHost, port, host } from '../../configs/environments'
 
 //连接zookeeper服务中心
-const CONNECTION_STRING = Environments.zkHost
-const zk = createClient(CONNECTION_STRING)
+const zk = createClient(zkHost)
 zk.connect()
 //连接成功后开始注册服务
 zk.once('connected', () => {
@@ -15,12 +14,12 @@ zk.once('connected', () => {
  */
 function registerRootPath() {
   //检测根节点是否存在
-  zk.exists(Environments.rootPath, (err, stat) => {
+  zk.exists(rootPath, (err, stat) => {
     if (err) {
       throw err
     }
     if (stat == null) { //根节点不存在，先创建根节点
-      zk.create(Environments.rootPath, (err, path) => {
+      zk.create(rootPath, (err, path) => {
         if (err) {
           throw err
         }
@@ -36,7 +35,7 @@ function registerRootPath() {
  * 注册服务节点
  */
 function registerService() {
-  const servicePath = Environments.rootPath + '/' + Environments.serviceName
+  const servicePath = rootPath + '/' + serviceName
   console.log('注册服务: ', servicePath)
   //判断服务节点是否存在
   zk.exists(servicePath, (err, stat) => {
@@ -60,8 +59,8 @@ function registerService() {
  * 注册地址节点
  */
 function registerAddressNode() {
-  const addressPath = `${Environments.rootPath + '/' + Environments.serviceName}/address-`
-  const serviceAddress = `${Environments.host}:${process.env.PORT || Environments.port || '3000'}`
+  const addressPath = `${rootPath + '/' + serviceName}/address-`
+  const serviceAddress = `${host}:${process.env.PORT || port || '3000'}`
   zk.create(addressPath, Buffer.from(serviceAddress), ACL.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL, (err, path) => {
     if (err) {
       throw err

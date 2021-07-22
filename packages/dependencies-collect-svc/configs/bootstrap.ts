@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { print } from './utils'
-import dotenv from 'dotenv'
+import * as dotenv from 'dotenv'
 
 // "before" will trigger before the app lift.
 export const before = (): object => {

@@ -1,4 +1,4 @@
-import config from '../../configs/environments'
+import * as config from '../../configs/environments'
 
 export default async function getServiceAddress(serviceName) {
   return new Promise(async (resolve, reject) => {

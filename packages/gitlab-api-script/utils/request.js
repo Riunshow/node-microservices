@@ -1,8 +1,5 @@
 const axios = require('axios')
-
-const TOKEN = ''
-
-const baseURL = ''
+const { TOKEN, baseURL } = require('../env')
 
 const service = axios.create({
   baseURL,

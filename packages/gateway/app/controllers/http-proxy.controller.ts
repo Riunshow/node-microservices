@@ -7,7 +7,7 @@ import * as Koa from 'koa'
 import httpProxy from 'http-proxy'
 
 import { print } from 'configs/utils'
-import Environments from 'configs/environments'
+import * as Environments from 'configs/environments'
 
 @JsonController('/collect')
 @Service()

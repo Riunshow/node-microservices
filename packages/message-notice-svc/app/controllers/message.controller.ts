@@ -17,7 +17,7 @@ export class MessageController {
     const createArgs: Prisma.MessageCreateArgs = {
       data: { sender: 'sender-1', gitlabProjectId: 0, msgType: 'FEATURE', contentType: 'TEXT', content: '' }
     }
-    const createRes = prisma.message.create(createArgs)
+    const createRes = await prisma.message.create(createArgs)
 
     return {
       success: true,
@@ -40,7 +40,7 @@ export class MessageController {
 
     const args: Prisma.MessageFindManyArgs = { where, take, skip }
 
-    const data = prisma.message.findMany(args)
+    const data = await prisma.message.findMany(args)
 
     return {
       success: true,

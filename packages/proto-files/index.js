@@ -1,4 +1,3 @@
 export default {
-    message: __dirname + './message.proto'
+    message: __dirname + '/message.proto'
 }
-  

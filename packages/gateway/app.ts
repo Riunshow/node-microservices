@@ -1,6 +1,6 @@
 import { Server } from 'http'
 import { print } from 'configs/utils'
-import Environment from 'configs/environments'
+import * as Environment from 'configs/environments'
 import createServer from 'configs/application'
 import * as bootstrap from 'configs/bootstrap'
 

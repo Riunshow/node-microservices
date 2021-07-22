@@ -1,5 +1,5 @@
 import { createClient, Client } from 'node-zookeeper-client'
-import Environments from '../../configs/environments'
+import * as Environments from '../../configs/environments'
 
 const promisify = require('util').promisify
 
