@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../generated"
+}
+
+// group表, 自关联->subgroup
+model Group {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  parentGroup Group @relation(fields: [parentId], references: [id])
+  parentId    Int
+
+  subGroup Group[]   @relation("GroupToGroup")
+  project  Project[]
+
+  @@unique([name, path])
+}
+
+// 项目
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  group Group @relation(fields: [gid], references: [id])
+  gid   Int
+
+  dependencies Dependencies[]
+  messages     Message[]
+
+  @@unique([name, path])
+}
+
+// 依赖
+model Dependencies {
+  id        Int      @id @default(autoincrement())
+  name      String
+  version   String
+  isDev     Boolean  @default(false) // 是否是 devDependencies
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  project Project @relation(fields: [pid], references: [id])
+  pid     Int
+}
+
+// 消息类型
+enum MsgType {
+  FEATURE
+  RELEASE
+  BUGFIX
+}
+
+// 消息内容类型
+enum ContentType {
+  TEXT
+  MARKDOWN
+}
+
+// message 表
+model Message {
+  id          Int         @id @default(autoincrement())
+  sender      String // 发送人
+  msgType     MsgType     @default(FEATURE)
+  contentType ContentType @default(TEXT)
+  content     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now())
+
+  project         Project @relation(fields: [gitlabProjectId], references: [id])
+  gitlabProjectId Int
+}

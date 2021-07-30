@@ -7,7 +7,9 @@
     "lerna": "^4.0.0"
   },
   "scripts": {
-    "lerna": "lerna"
+    "lerna": "lerna",
+    "docker:build": "zx scripts/docker.mjs build",
+    "dev": "zx scripts/docker.mjs dev"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Riunshow/node-microservices/issues"
   },
-  "homepage": "https://github.com/Riunshow/node-microservices#readme"
+  "homepage": "https://github.com/Riunshow/node-microservices#readme",
+  "dependencies": {
+    "zx": "^2.0.0"
+  }
 }

@@ -1,14 +1,15 @@
 {
-  "name": "@turbine/proto-files",
+  "name": "@turbine/gitlab-api-script",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@turbine/schema": "^1.0.0"
+    "@turbine/schema": "^1.0.0",
+    "axios": "^0.21.1"
   }
 }

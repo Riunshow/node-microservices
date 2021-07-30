@@ -1,0 +1,19 @@
+{
+  "name": "@turbine/schema",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generated/index.js",
+  "types": "generated/index.d.ts",
+  "scripts": {
+    "prepublish": "prisma generate",
+    "format": "prisma format"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^2.27.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^2.27.0"
+  }
+}
