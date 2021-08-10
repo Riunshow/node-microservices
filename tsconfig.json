@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "ES2019",
+      "allowJs": true,
+      "moduleResolution": "Node",
+      "module": "commonjs",
+      "removeComments": true,
+      "noImplicitAny": false,
+      "esModuleInterop": true,
+      "preserveConstEnums": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "typeRoots": [
+        "node_modules/@types",
+        "typings"
+      ],
+      "plugins": [
+        { "transform": "typescript-transform-paths" }
+      ]
+    },
+    "compileOnSave": false
+  }

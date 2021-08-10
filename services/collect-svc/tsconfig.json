@@ -1,35 +1,11 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2019",
-    "allowJs": true,
-    "moduleResolution": "Node",
-    "module": "commonjs",
     "outDir": "./dist",
-    "lib": ["es2015"],
-    "removeComments": true,
-    "noImplicitAny": false,
-    "esModuleInterop": true,
-    "preserveConstEnums": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "typings"
-    ],
-    "baseUrl": "."
-  },
-  "compileOnSave": false,
-  "includes": [
-    "app/**/*",
-    "configs/**/*",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "files": [
-    "app.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "rootDir": "src",
+    "plugins": [
+      { "transform": "typescript-transform-paths" }
+    ]
+  }
 }

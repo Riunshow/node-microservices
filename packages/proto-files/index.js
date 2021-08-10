@@ -1,3 +1,3 @@
-export default {
-    message: __dirname + '/message.proto'
+module.exports = {
+    path: __dirname + '/message.proto'
 }

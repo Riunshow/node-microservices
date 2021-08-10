@@ -9,7 +9,7 @@ const TAG = `${BRANCH.toString().trim()}-${SHA.toString().trim()}`
 switch (command[0]) {
   case 'build':
     console.log('parpare building docker image')
-    await $`TAG=${TAG} docker-compose build`
+    await $`TAG=${TAG} docker-compose -f docker-compose.yaml build`
     break
   case 'dev':
     console.warn('start development env')

@@ -35,6 +35,9 @@ services:
         PORT: 3002
     image: ${REPO:-turbine}/message-svc:${TAG:-latest}
     environment:
+      PORT: 3002
+      GRPC_PORT: 3003
+      HOST: message-svc
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
       SERVICE_NAME: 'message-svc'
