@@ -5,9 +5,14 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE: gateway
+        SERVICE_PATH: gateway
         PORT: 3000
     image: ${REPO:-turbine}/gateway:${TAG:-latest}
+    depends_on:
+      - zookeeper
+      - database
+    ports:
+      - "3000:3000"
     environment:
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
@@ -18,34 +23,41 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE: collect-svc
+        SERVICE_PATH: collect-svc
         PORT: 3001
     image: ${REPO:-turbine}/collect-svc:${TAG:-latest}
+    depends_on:
+      - zookeeper
+      - database
     environment:
+      identity: producation
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
-      SERVICE_NAME: 'collect-svc'
+      SERVICE_NAME: 'collect'
       DATABASE_URL: postgresql://postgres:microservices@database:5432/turbine
   message-svc:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE: message-svc
+        SERVICE_PATH: message-svc
         PORT: 3002
     image: ${REPO:-turbine}/message-svc:${TAG:-latest}
+    depends_on:
+      - zookeeper
+      - database
     environment:
-      PORT: 3002
+      identity: producation
       GRPC_PORT: 3003
-      HOST: message-svc
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
-      SERVICE_NAME: 'message-svc'
+      SERVICE_NAME: 'message'
       DATABASE_URL: postgresql://postgres:microservices@database:5432/turbine
   database:
     image: postgres:13.3
     restart: always
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: microservices
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
