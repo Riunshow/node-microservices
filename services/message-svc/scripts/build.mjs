@@ -8,7 +8,7 @@ let copyFile = {...packageFile}
 try {
     console.log('clearing build folder')
     await $`rm -rf ../dist`
-    console.log('building...')
+    console.log('message-svc building...')
     await $`tsc`
     console.log('writing package.json')
     await fs.writeFile(`${PATH_ROOT}/dist/package.json`, JSON.stringify(copyFile))

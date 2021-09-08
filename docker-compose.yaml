@@ -6,20 +6,22 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE: gateway
-        PORT: 3000
+        PORT: 2000
     image: ${REPO:-turbine}/gateway:${TAG:-latest}
     environment:
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
       SERVICE_NAME: gateway
       DATABASE_URL: postgresql://postgres:microservices@database:5432/turbine
+    ports:
+      - "2000:2000"
   collect-svc:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         SERVICE: collect-svc
-        PORT: 3001
+        PORT: 2001
     image: ${REPO:-turbine}/collect-svc:${TAG:-latest}
     environment:
       ZK_HOST: zookeeper:2181
@@ -32,11 +34,11 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE: message-svc
-        PORT: 3002
+        PORT: 2002
     image: ${REPO:-turbine}/message-svc:${TAG:-latest}
     environment:
-      PORT: 3002
-      GRPC_PORT: 3003
+      PORT: 2002
+      GRPC_PORT: 2003
       HOST: message-svc
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
@@ -45,6 +47,7 @@ services:
   database:
     image: postgres:13.3
     restart: always
+    user: postgres
     environment:
       POSTGRES_PASSWORD: microservices
     healthcheck:
@@ -52,9 +55,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "5432:5432"
   zookeeper:
     image: zookeeper:3.7.0
     restart: always
     hostname: zookeeper
     ports:
-      - 2182:2181
+      - "2182:2181"

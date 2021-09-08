@@ -2,15 +2,15 @@
 	"name": "@turbine/gateway",
 	"version": "0.0.1",
 	"license": "MIT",
-	"main": "app.ts",  
+	"main": "app.ts",
 	"scripts": {
 		"test": "jest --config .jest.config.js --no-cache --detectOpenHandles",
 		"prettier": "prettier --write '**/*.{js,ts}'",
 		"dev": "nodemon --config nodemon.json",
-		"start": "node ./dist/app.js",
+		"start": "node ./dist/app.js  --trace-deprecation",
 		"build": "zx scripts/build.mjs",
 		"grpc-tools": "grpc-tools"
-	  },	
+	  },
 	  "engines": {
 		"node": ">= 12.0"
 	},
