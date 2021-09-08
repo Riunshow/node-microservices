@@ -8,7 +8,7 @@
     "prettier": "prettier --write '**/*.{js,ts}'",
     "dev": "nodemon --config nodemon.json",
     "deploy": "prisma migrate deploy --schema ./node_modules/@turbine/schema/generated/schema.prisma",
-    "start": "node -r dotenv/config ./dist/app.js",
+    "start": "node -r dotenv/config ./dist/app.js  --trace-deprecation",
     "build": "zx scripts/build.mjs"
   },
   "engines": {

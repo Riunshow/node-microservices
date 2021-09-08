@@ -5,49 +5,59 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE: gateway
-        PORT: 2000
+        SERVICE_PATH: gateway
+        PORT: 3000
     image: ${REPO:-turbine}/gateway:${TAG:-latest}
+    depends_on:
+      - zookeeper
+      - database
+    ports:
+      - "3000:3000"
     environment:
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
       SERVICE_NAME: gateway
       DATABASE_URL: postgresql://postgres:microservices@database:5432/turbine
-    ports:
-      - "2000:2000"
   collect-svc:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE: collect-svc
-        PORT: 2001
+        SERVICE_PATH: collect-svc
+        PORT: 3001
     image: ${REPO:-turbine}/collect-svc:${TAG:-latest}
+    depends_on:
+      - zookeeper
+      - database
     environment:
+      identity: producation
+      HOST: collect-svc
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
-      SERVICE_NAME: 'collect-svc'
+      SERVICE_NAME: 'collect'
       DATABASE_URL: postgresql://postgres:microservices@database:5432/turbine
   message-svc:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        SERVICE: message-svc
-        PORT: 2002
+        SERVICE_PATH: message-svc
+        PORT: 3002
     image: ${REPO:-turbine}/message-svc:${TAG:-latest}
+    depends_on:
+      - zookeeper
+      - database
     environment:
-      PORT: 2002
-      GRPC_PORT: 2003
-      HOST: message-svc
+      identity: producation
+      GRPC_PORT: 3003
+      HOST: collect-svc
       ZK_HOST: zookeeper:2181
       ZK_ROOT_PATH: '/services'
-      SERVICE_NAME: 'message-svc'
+      SERVICE_NAME: 'message'
       DATABASE_URL: postgresql://postgres:microservices@database:5432/turbine
   database:
     image: postgres:13.3
     restart: always
-    user: postgres
     environment:
       POSTGRES_PASSWORD: microservices
     healthcheck:
@@ -55,8 +65,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    ports:
-      - "5432:5432"
   zookeeper:
     image: zookeeper:3.7.0
     restart: always

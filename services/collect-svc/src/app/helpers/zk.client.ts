@@ -61,7 +61,7 @@ function registerService() {
 function registerAddressNode() {
   const addressPath = `${zkRootPath + '/' + serviceName}/address-`
   const serviceAddress = `${HOST}:${PORT || '3000'}`
-  zk.create(addressPath, Buffer.from(serviceAddress), ACL.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL, (err, path) => {
+  zk.create(addressPath, Buffer.from(serviceAddress), CreateMode.EPHEMERAL_SEQUENTIAL, CreateMode.EPHEMERAL_SEQUENTIAL, (err, path) => {
     if (err) {
       throw err
     }
